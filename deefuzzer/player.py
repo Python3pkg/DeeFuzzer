@@ -36,7 +36,7 @@
 
 # Author: Guillaume Pellerin <yomguy@parisson.com>
 
-from relay import *
+from .relay import *
 import time
 
 
@@ -122,7 +122,7 @@ class URLReader:
 
     def __init__(self, relay):
         self.__relayparam = relay
-        self.relay = urllib.urlopen(self.__relayparam)
+        self.relay = urllib.request.urlopen(self.__relayparam)
         self.rec_mode = 0
 
     def set_recorder(self, recorder, mode=1):
@@ -137,7 +137,7 @@ class URLReader:
         except:
             while True:
                 try:
-                    self.relay = urllib.urlopen(self.__relayparam)
+                    self.relay = urllib.request.urlopen(self.__relayparam)
                     chunk = self.relay.read(size)
                     break
                 except:

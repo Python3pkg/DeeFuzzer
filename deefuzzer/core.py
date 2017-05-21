@@ -38,7 +38,7 @@
 
 import os
 import shout
-import Queue
+import queue
 import datetime
 import mimetypes
 import hashlib
@@ -58,7 +58,7 @@ class DeeFuzzer(Thread):
     station_settings = []
     station_instances = {}
     watchfolder = {}
-    logqueue = Queue.Queue()
+    logqueue = queue.Queue()
     mainLoop = False
     ignoreErrors = False
     maxretry = 0
@@ -79,7 +79,7 @@ class DeeFuzzer(Thread):
         self.logger = QueueLogger(log_file, self.logqueue)
         self.logger.start()
 
-        for key in self.conf['deefuzzer'].keys():
+        for key in list(self.conf['deefuzzer'].keys()):
             if key == 'm3u':
                 self.m3u = str(self.conf['deefuzzer'][key])
 
@@ -134,7 +134,7 @@ class DeeFuzzer(Thread):
             os.makedirs(m3u_dir)
         m3u = open(self.m3u, 'w')
         m3u.write('#EXTM3U\n')
-        for k in self.station_instances.keys():
+        for k in list(self.station_instances.keys()):
             s = self.station_instances[k]
             m3u.write('#EXTINF:%s,%s - %s\n' % ('-1', s.short_name, s.channel.name))
             m3u.write('http://' + s.channel.host + ':' + str(s.channel.port) + s.channel.mount + '\n')
@@ -201,7 +201,7 @@ class DeeFuzzer(Thread):
             return
         self._info('Creating station for folder ' + folder)
         d = dict(path=folder, name=name)
-        for i in options.keys():
+        for i in list(options.keys()):
             if 'folder' not in i:
                 s[i] = replace_all(options[i], d)
         if 'media' not in s:
@@ -258,7 +258,7 @@ class DeeFuzzer(Thread):
             return
 
     def run(self):
-        q = Queue.Queue(1)
+        q = queue.Queue(1)
         ns = 0
         p = Producer(q)
         p.start()
@@ -316,7 +316,7 @@ class DeeFuzzer(Thread):
                             if 'short_name' in self.station_settings[i]['infos']:
                                 name = self.station_settings[i]['infos']['short_name']
                                 y = 1
-                                while name in self.station_instances.keys():
+                                while name in list(self.station_instances.keys()):
                                     y += 1
                                     name = self.station_settings[i]['infos']['short_name'] + " " + str(y)
 
